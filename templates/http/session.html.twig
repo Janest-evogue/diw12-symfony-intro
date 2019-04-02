@@ -1,0 +1,9 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    {#
+    app.getSession() ou app.session
+    pour accéder à la session dans un template
+    #}
+    {{ dump(app.session.all) }}
+{% endblock %}
