@@ -1,0 +1,216 @@
+{# le template hérite de base.html.twig = reprend son contenu #}
+{% extends 'base.html.twig' %}
+
+{#
+surcharge le contenu du bloc title défini dans base.html.twig = redéfinit
+son contenu
+
+{{ parent() }} reprend le contenu du bloc title défini dans base.html.twig
+à l'endroit où on le place
+#}
+{% block title %}{{ parent() }} - Twig{% endblock %}
+
+{% block body %}
+    {# définit une variable #}
+    {% set test = 'Une variable de test' %}
+
+    {# affiche la variable #}
+    {# <?= $test; ?> #}
+    {{ test }}
+
+    {# concaténation avec le tilde (~) #}
+    <p>{{ test ~ ' !' }}</p>
+
+    {# équivalent d'un var_dump() #}
+    {{ dump(test) }}
+
+    {# structure conditionnelle #}
+    {% if test != '' %}
+        <p>test n'est pas une chaîne vide</p>
+    {% else %}
+        <p>test est une chaîne vide</p>
+    {% endif %}
+
+    {% set vrai = true %}
+    {% set faux = false %}
+
+    {#
+    not pour !
+    if (!$faux)
+    #}
+    {% if not faux %}
+        <p>faux n'est pas vrai</p>
+    {% endif %}
+
+    {#
+    and et or en toutes lettres
+    if ($vrai && !$faux)
+    #}
+    {% if vrai and not faux %}
+        <p>vrai est vrai et faux n'est pas vrai</p>
+    {% endif %}
+
+    {# tableau indexé #}
+    {% set tab = [1, 2, 3, 4] %}
+
+    {# foreach ($tab as $nb) #}
+    {% for nb in tab %}
+        {{ nb }}<br>
+    {% endfor %}
+
+    {# for ($i = 0; $i <= 10; i++) #}
+    {% for i in 0..10 %}
+        {{ i }}<br>
+    {% endfor %}
+
+    {# pour accéder à la valeur à l'indice 1 : #}
+    <p>{{ tab[1] }}</p>
+    {# ou : #}
+    <p>{{ tab.1 }}</p>
+
+    {#
+    tableau associatif
+    $assoc = ['nom' => 'Anest', 'prenom' => 'Julien']
+    #}
+    {% set assoc = {nom: "Anest", prenom: "Julien"} %}
+
+    {# pour accéder à la valeur avec la clé nom : #}
+    <p>{{ assoc['nom'] }}</p>
+    {# ou : #}
+    <p>{{ assoc.nom }}</p>
+
+    {# foreach ($assoc as $key => $value) #}
+    {% for key, value in assoc %}
+        {{ key }} : {{ value }}<br>
+    {% endfor %}
+
+    {% set vide = [] %}
+
+    {# on rentre dans le else d'un for si le tableau est vide #}
+    {% for element in vide %}
+        {{ element }}<br>
+    {% else %}
+        <p>Le tableau est vide</p>
+    {% endfor %}
+
+    {#
+    La variable loop nous est toujours données dans une boucle
+    et nous informe sur l'état de la boucle
+    #}
+    {% for nb in tab %}
+        Tour de boucle (index 1) : {{ loop.index }}<br>
+        Tour de boucle (index 0) : {{ loop.index0 }}<br>
+
+        {% if loop.first %}
+            1er tour de boucle<br>
+        {% endif %}
+
+        {% if loop.last %}
+            Dernier tour de boucle<br>
+        {% endif %}
+
+        {{ nb }}<br>
+    {% endfor %}
+
+    {# Tests avec IS et IS NOT #}
+
+    {# if (isset($test)) #}
+    {% if test is defined %}
+        <p>La variable test existe</p>
+    {% endif %}
+
+    {# if (!empty($test)) #}
+    {% if test is not empty %}
+        <p>La variable test n'est pas vide</p>
+    {% endif %}
+
+    {# if (!is_null($test)) #}
+    {% if test is not null %}
+        <p>La variable test n'est pas nulle</p>
+    {% endif %}
+
+    {% set dix = 10 %}
+
+    {# if ($dix % 5 == 0) #}
+    {% if dix is divisible by(5) %}
+        <p>{{ dix }} est divisible par 5</p>
+    {% endif %}
+
+    {# even et odd pour pair et impair #}
+    {% if dix is even %}
+        <p>{{ dix }} est pair</p>
+    {% endif %}
+
+    {% if dix is not odd %}
+        <p>{{ dix }} n'est pas impair</p>
+    {% endif %}
+
+    {# if (in_array(2, $tab)) #}
+    {% if 2 in tab %}
+        <p>La valeur 2 est contenue dans le tableau tab</p>
+    {% endif %}
+
+    {# Filtres avec pipe | #}
+
+    {# strtoupper($test) #}
+    <p>{{ test|upper }}</p>
+
+    {# valeur par défaut qui s'applique quand la variable est vide (empty) #}
+    <p>{{ var|default('La variable var est vide') }}</p>
+
+    {# on peut cumuler les filtres #}
+    <p>{{ var|default('La variable var est vide')|upper }}</p>
+
+    {# first et last pour 1er et dernier élément d'un tableau #}
+    <p>{{ assoc|first }}</p>
+
+    {# formatage de date avec la syntaxe de la fonction date() de PHP #}
+    <p>{{ '2019-03-29'|date('d/m/Y') }}</p>
+
+    {# filtre date sur un objet DateTime (auj vient du contrôleur) #}
+    <p>{{ auj|date('d/m/Y H:i:s') }}</p>
+
+    {#
+    Identique à l'appel de la méthode format() de DateTime
+    L'appel d'une méthode d'un objet se fait avec un point
+    #}
+    <p>{{ auj.format('d/m/Y H:i:s') }}</p>
+
+    {% set html = '<p>Un paragraphe</p>' %}
+
+    {#
+    Par défaut le HTML est échappé en utilisant des entités HTML,
+    soit &lt; pour < et &gt; pour >
+    #}
+    {{ html }}
+
+    {# pour que le HTML ne soit pas échappé : #}
+    {{ html|raw }}
+
+    {#
+    Inclusion d'un autre template :
+    chemin à partir de la racine du répertoire templates
+    #}
+    {% include 'twig/inclus.html.twig' %}
+
+    {# le fichier inclus n'a pas accès aux variables qui viennent de ce fichier #}
+    {% include 'twig/inclus.html.twig' only %}
+
+    {# le fichier inclus a accès a une variable foo qui vaut 'BAR' #}
+    {% include 'twig/inclus.html.twig' with {foo: 'BAR'} %}
+
+    {#
+    le fichier inclus a accès a une variable foo qui vaut 'BAR'
+    et n'a pas accès aux variables qui viennent de ce fichier
+    #}
+    {% include 'twig/inclus.html.twig' with {foo: 'BAR'} only %}
+{% endblock %}
+
+
+
+
+
+
+
+
+
