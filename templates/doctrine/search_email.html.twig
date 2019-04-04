@@ -1,0 +1,21 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <form>
+        <div>
+            <label>Email</label>
+            <input type="text" name="email">
+            <button type="submit">Chercher</button>
+        </div>
+    </form>
+
+    {# si la variable user existe #}
+    {% if user is defined %}
+        {# si le findOneBy() a renvoyer un résultat #}
+        {% if user is not null %}
+            L'utilisateur est : {{ user }}
+        {% else %}
+            Aucun utilisateur avec cet email
+        {% endif %}
+    {% endif %}
+{% endblock %}

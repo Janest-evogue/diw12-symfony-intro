@@ -1,0 +1,16 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1>Hello {{ user.firstname }} {{ user.lastname }}</h1>
+
+    {#
+    on peut afficher l'objet User car la classe contient une méthode __toString
+    #}
+    <p>Nom de l'utilisateur : {{ user }}</p>
+
+    {#
+    l'attribut birthdate est un objet DateTime, donc il faut le formater pour l'afficher
+    #}
+    <p>Date de naissance : {{ user.birthdate|date('d/m/Y') }}</p>
+{#  ou :  <p>Date de naissance : {{ user.birthdate.format('d/m/Y') }}</p>#}
+{% endblock %}

@@ -1,0 +1,19 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <table>
+        <tr>
+            <th>Id</th>
+            <th>Nom</th>
+            <th>Membres</th>
+        </tr>
+        {% for team in teams %}
+            <tr>
+                <td>{{ team.id }}</td>
+                <td>{{ team.name }}</td>
+                <td>{{ team.users|join(', ') }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+
+{% endblock %}
